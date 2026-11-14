@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#f6f3ec"><title>Sloth Sensory Library v0.6.3</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#f6f3ec"><title>Sloth Sensory Library v0.6.4</title>
 <style>
 :root{--bg:#f6f3ec;--card:#fffdf8;--ink:#25231f;--muted:#777168;--line:#ddd6ca;--accent:#6d725d;--soft:#ece9e0;--danger:#a9574b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;line-height:1.5}.wrap{max-width:760px;margin:auto;padding:18px 14px 40px}header{padding:8px 3px 10px}h1{font-size:25px;margin:0}.sub,.help,.meta{color:var(--muted);font-size:12px}.note{background:var(--soft);border-radius:14px;padding:12px 14px;font-size:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #00000008}.card h2{font-size:18px;margin:0 0 4px}.time{font-size:12px;color:var(--accent);font-weight:700;margin:0 0 13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}@media(max-width:560px){.grid{grid-template-columns:1fr}}label{display:block;font-size:13px;font-weight:700;margin:2px 0 5px}input,select,textarea{width:100%;font:inherit;border:1px solid var(--line);border-radius:12px;background:white;padding:11px 12px}textarea{min-height:72px;resize:vertical}.choice,.chips,.row{display:flex;gap:7px;flex-wrap:wrap}.choice button,.chip,.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 11px;font:inherit;font-size:13px;cursor:pointer}.choice button.active,.chip.active{background:var(--accent);border-color:var(--accent);color:white}.btn{border-radius:12px;font-weight:700}.btn.primary{background:var(--accent);border-color:var(--accent);color:white}.btn.danger{background:var(--danger);border-color:var(--danger);color:white}.q{margin:13px 0}.qtitle{font-size:13px;font-weight:750;margin-bottom:7px}.details{margin-top:8px;padding-left:8px;border-left:2px solid var(--soft)}.heart button{font-size:22px;padding:5px 9px}.heart button.active{background:#fff;border-color:#b98b87;color:#b45450}.spectrum{margin:13px 0}.spec-head{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}.track{height:8px;border-radius:10px;background:#e5e0d6;position:relative;margin:7px 5px}.dot{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--accent);top:50%;transform:translate(-50%,-50%)}.hidden{display:none}.listitem{border-top:1px solid var(--line);padding:12px 0}.listitem:first-child{border-top:0}.success{font-size:13px;color:var(--accent);font-weight:800}.igcard{border:1px solid var(--line);background:#faf8f2;padding:18px;border-radius:16px;margin-top:12px}.igtitle{font-size:22px;font-weight:800;letter-spacing:.02em}.smallcaps{font-size:11px;letter-spacing:.08em;color:var(--muted);font-weight:800}.aromas{font-size:14px;margin:7px 0 14px}.sectionline{border:0;border-top:1px solid var(--line);margin:15px 0}
 </style></head><body><div class="wrap">
-<header><h1>Sloth Sensory Library</h1><div class="sub">v0.6.3 / 送信方式の修正（Google Sheets同期）</div></header>
+<header><h1>Sloth Sensory Library</h1><div class="sub">v0.6.4 / 全件再送対応（Google Sheets同期）</div></header>
 <div class="note"><b>入力は軽く、データは細かく。</b> 強度と好き嫌いを分け、飲中と飲後も別々に記録します。評価者ごとの差は消さずに保存します。共有DBはGoogle Sheetsへ接続できます。</div>
 <form id="form">
 <section class="card"><h2>01 / BEER 基本情報</h2><p class="time">分かる情報だけでOK。タップで飲むときにラベル画像は不要です。</p><div class="q"><div class="qtitle">提供形態 / Format</div><div class="choice single" data-key="format"><button type="button">TAP / タップ</button><button type="button">CAN / 缶</button><button type="button">BOTTLE / 瓶</button></div></div><div class="grid"><div><label>Beer / ビール名</label><input id="beerName" required></div><div><label>Brewery / ブルワリー</label><input id="brewery"></div><div><label>Style / スタイル</label><input id="style"></div><div><label>ABV (%)</label><input id="abv" inputmode="decimal"></div><div><label>Origin / 国・地域</label><input id="origin"></div><div><label>Brewery ID / ブルワリーID</label><input id="breweryId" placeholder="自動補完・任意"></div><div><label>Beer ID / ビールID</label><input id="beerId" placeholder="自動補完・任意"></div><div><label>Evaluator / 評価者</label><div class="choice single evaluator-choice" data-key="evaluator"><button type="button" data-value="正司">正司</button><button type="button" data-value="濱岡">濱岡</button><button type="button" data-value="その他">その他</button></div><input id="evaluatorOther" class="hidden" placeholder="評価者名を入力"></div><div><label>Date / 評価日</label><input id="date" type="date"></div></div></section>
@@ -24,7 +24,7 @@
 <section class="card"><h2>05 / AFTER 飲み込んだあと</h2><p class="time">飲み込んだ直後〜約30秒。飲中とは別に記録します。</p><div id="sweetFinish"></div><div id="acidFinish"></div><div id="bitterFinish"></div><div id="finishLength"></div><div class="q"><div class="qtitle">After Feel / 飲後の感触（複数可）</div><div class="chips" data-key="afterFeel"><button class="chip" type="button">クリーン / Clean</button><button class="chip" type="button">ドライ / Dry</button><button class="chip" type="button">爽やか / Refreshing</button><button class="chip" type="button">ジューシー / Juicy</button><button class="chip" type="button">渋み / Astringent</button><button class="chip" type="button">収斂感 / Tannic</button><button class="chip" type="button">舌に残る / Coating tongue</button><button class="chip" type="button">口にまとわる / Coating</button><button class="chip" type="button">温かさ / Warming</button><button class="chip" type="button">アルコール感 / Alcohol</button></div></div></section>
 <section class="card"><h2>06 / OVERALL 総合</h2><div id="fatigue"></div><div class="q"><div class="qtitle">Another glass? / もう一杯飲みたい？</div><div class="choice single" data-key="anotherGlass"><button type="button">YES</button><button type="button">MAYBE</button><button type="button">NO</button></div></div><div class="q"><div class="qtitle">Personal Like / 個人的に好き？</div><div class="choice single heart" data-key="personalLike"><button type="button" data-value="1">♡</button><button type="button" data-value="2">♡</button><button type="button" data-value="3">♡</button><button type="button" data-value="4">♡</button><button type="button" data-value="5">♡</button></div></div><div class="q"><div class="qtitle">SLOTH PICK / Slothで出したい？</div><div class="choice single" data-key="slothPick"><button type="button">YES</button><button type="button">MAYBE</button><button type="button">NO</button></div></div><label>RAW NOTE / 一言（任意）</label><textarea id="rawNote" placeholder="例：最初は柔らかい。後から酸と苦味が意外と残る。"></textarea></section>
 <section class="card"><h2>07 / SAVE 保存</h2><div class="row"><button class="btn primary" type="submit">評価を保存</button><button class="btn" type="button" id="resetBtn">クリア</button></div><div id="saveMsg" class="success"></div></section></form>
-<section class="card"><h2>Shared DB / 共有データ</h2><p class="time">端末内保存だけで使えます。Apps Script URLを設定するとGoogle Sheetsへ送信します（送信結果はSheets側でご確認ください）。</p><label>Google Apps Script Web App URL / 同期先URL</label><input id="syncUrl" placeholder="https://script.google.com/macros/s/.../exec"><div class="row" style="margin-top:8px"><button class="btn" id="saveSync" type="button">設定を保存</button><button class="btn" id="syncAll" type="button">未同期データを送信</button></div><div id="syncMsg" class="meta" style="margin-top:8px"></div></section>
+<section class="card"><h2>Shared DB / 共有データ</h2><p class="time">端末内保存だけで使えます。Apps Script URLを設定するとGoogle Sheetsへ送信します（送信結果はSheets側でご確認ください）。</p><label>Google Apps Script Web App URL / 同期先URL</label><input id="syncUrl" placeholder="https://script.google.com/macros/s/.../exec"><div class="row" style="margin-top:8px"><button class="btn" id="saveSync" type="button">設定を保存</button><button class="btn" id="syncAll" type="button">未同期データを送信</button><button class="btn" id="syncForceAll" type="button">すべて再送信</button></div><div id="syncMsg" class="meta" style="margin-top:8px"></div></section>
 <section class="card"><h2>Beer Profile / Instagram Preview</h2><p class="time">数字は見せず、性格を日英Spectrumで表示。品質点ではありません。</p><div id="preview" class="igcard"></div></section>
 <section class="card"><h2>保存済み評価</h2><div id="list"></div><div class="row"><button class="btn" id="exportJson">JSON</button><button class="btn" id="exportCsv">CSV</button><label class="btn">JSON読み込み<input id="importJson" type="file" accept="application/json" class="hidden"></label></div></section>
 </div><script>
@@ -69,27 +69,49 @@ function postRow(row){
 const MIGRATED_KEY='sloth_sensory_migrated_v063';
 function migrateLegacySync(){try{if(localStorage.getItem(MIGRATED_KEY))return 0;const a=load();let n=0;for(const r of a){if(r.syncStatus==='synced'){r.syncStatus='local';r.legacySynced=true;n++;}}if(n)save(a);localStorage.setItem(MIGRATED_KEY,'1');return n;}catch(e){return 0}}
 function updateInfo(msg){const a=load();const u=a.filter(r=>r.syncStatus!=='sent').length;const sy=a.length-u;$('syncMsg').textContent=msg||`未送信 ${u}件 ・ 送信済み ${sy}件`}
-async function syncAll(){
+function syncPrecheck(){
   const url=syncEndpoint();
-  if(!url){$('syncMsg').textContent='同期先URLが未設定です。';return;}
-  if(!VALID_URL.test(url)){$('syncMsg').textContent='同期先URLの形式が正しくありません（https://script.google.com/macros/s/…/exec）。';return;}
+  if(!url){$('syncMsg').textContent='同期先URLが未設定です。';return false;}
+  if(!VALID_URL.test(url)){$('syncMsg').textContent='同期先URLの形式が正しくありません（https://script.google.com/macros/s/…/exec）。';return false;}
+  return true;
+}
+function setSyncing(on){['syncAll','syncForceAll'].forEach(id=>{const b=$(id);if(b)b.disabled=on;});}
+/* v0.6.4: 「未同期データを送信」と「すべて再送信」で同じ送信ループを共有する */
+async function pushRows(arr,targets,progressLabel){
+  setSyncing(true);
+  let sent=0,failed=0;
+  for(const t of targets){
+    $('syncMsg').textContent=`${progressLabel} ${sent+failed+1}/${targets.length}`;
+    const r=await postRow(t);
+    if(r.ok){t.syncStatus='sent';t.sentAt=new Date().toISOString();sent++;}else{t.syncStatus='local';failed++;}
+    save(arr);
+  }
+  setSyncing(false);render();
+  return {sent,failed};
+}
+async function syncAll(){
+  if(!syncPrecheck())return;
   const arr=load();
   const targets=arr.filter(r=>r.syncStatus!=='sent');
   if(!targets.length){$('syncMsg').textContent='未送信のデータはありません。';return;}
   const hasLegacy=targets.some(r=>r.legacySynced);
-  $('syncAll').disabled=true;
-  let sent=0,failed=0;
-  for(const t of targets){
-    $('syncMsg').textContent=`送信中… ${sent+failed+1}/${targets.length}`;
-    const r=await postRow(t);
-    if(r.ok){t.syncStatus='sent';t.sentAt=new Date().toISOString();sent++;}else{failed++;}
-    save(arr);
-  }
-  $('syncAll').disabled=false;render();
+  const {sent,failed}=await pushRows(arr,targets,'送信中…');
   let msg;
   if(failed) msg=`${sent}件を送信しました。${failed}件は通信エラーで送れませんでした（未送信として残しています。電波の良い場所で再送してください）。`;
   else msg=`${sent}件を送信しました。Google Sheetsを開いて反映をご確認ください。`;
   if(hasLegacy) msg+='※旧版で「送信済み」になっていた分を含みます。Sheetsに重複行ができる場合があります。';
+  updateInfo(msg);
+}
+/* v0.6.4: 送信済み（syncStatus:'sent'）も含めた全件再送。GASの公開設定を直したあとの取りこぼし回収用。 */
+async function syncForceAll(){
+  if(!syncPrecheck())return;
+  const arr=load();
+  if(!arr.length){$('syncMsg').textContent='再送するデータがありません。';return;}
+  if(!confirm('送信済みの評価も含めてすべてGoogle Sheetsへ送信しますか？（すでにシートにある場合は重複行ができます）')){$('syncMsg').textContent='全件再送をキャンセルしました。';return;}
+  const {sent,failed}=await pushRows(arr,arr.slice(),'全件再送中…');
+  let msg;
+  if(failed) msg=`${sent}件を送信しました。${failed}件は通信エラーで送れませんでした（未送信として残しています。電波の良い場所で再送してください）。`;
+  else msg=`送信済みを含む${sent}件をすべて送信しました。Google Sheetsを開いて反映をご確認ください（すでにあった行は重複しています）。`;
   updateInfo(msg);
 }
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return[]}} function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
@@ -117,7 +139,7 @@ function esc(s){return String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&l
 function render(){const a=load();$('list').innerHTML=a.length?'':'まだ評価はありません。';a.slice(0,40).forEach(x=>{const div=document.createElement('div');div.className='listitem';div.innerHTML=`<b>${esc(x.beerName||'(名称未入力)')}</b><div class="meta">${esc(x.brewery||'')} · ${esc(x.style||'')} · ${esc(x.date||'')} · ${esc(x.evaluator||'評価者未入力')}</div><div class="meta">${x.syncStatus==='sent'?'':'<b>未送信</b> · '}飲中 苦味:${esc(x.bitternessDrink||'-')} 酸味:${esc(x.acidityDrink||'-')} → 飲後 苦味:${esc(x.bitterFinish||'-')} 酸味:${esc(x.acidFinish||'-')} / SLOTH PICK ${esc(x.slothPick||'-')}</div><button class="btn danger" data-del="${x.id}" style="margin-top:6px;padding:5px 8px">削除</button>`;$('list').appendChild(div)});document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('削除しますか？')){save(load().filter(x=>String(x.id)!==b.dataset.del));render()}})}
 function dl(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 $('exportJson').onclick=()=>dl('sloth_sensory_v06.json',JSON.stringify(load(),null,2),'application/json');$('exportCsv').onclick=()=>{const a=load();if(!a.length)return alert('評価がありません');const keys=['date','evaluator','format','beerName','brewery','breweryKey','breweryId','beerId','style','abv','origin','aromaIntensity','aromaStatus','aromaGroups','aromaDetail','sweetness','acidityDrink','bitternessDrink','body','carbonation','mouthfeel','sweetFinish','acidFinish','bitterFinish','finishLength','afterFeel','fatigue','anotherGlass','personalLike','slothPick','rawNote'];const q=s=>'"'+String(Array.isArray(s)?s.join('|'):(s??'')).replace(/"/g,'""')+'"';dl('sloth_sensory_v06.csv','\ufeff'+keys.join(',')+'\n'+a.map(x=>keys.map(k=>q(x[k])).join(',')).join('\n'),'text/csv')};$('importJson').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x))throw 0;save([...x,...load()]);render();alert('読み込みました')}catch{alert('読み込めませんでした')}};r.readAsText(f);e.target.value=''};
-$('saveSync').onclick=()=>{saveConfig({syncUrl:$('syncUrl').value.trim()});$('syncMsg').textContent='同期先URLを保存しました。';};$('syncAll').onclick=syncAll;const cfg=loadConfig();$('syncUrl').value=cfg.syncUrl||'';['beerName','brewery','style','abv','origin','rawNote','evaluatorOther','breweryId','beerId'].forEach(id=>$(id).addEventListener('input',preview));preview();render();
+$('saveSync').onclick=()=>{saveConfig({syncUrl:$('syncUrl').value.trim()});$('syncMsg').textContent='同期先URLを保存しました。';};$('syncAll').onclick=syncAll;$('syncForceAll').onclick=syncForceAll;const cfg=loadConfig();$('syncUrl').value=cfg.syncUrl||'';['beerName','brewery','style','abv','origin','rawNote','evaluatorOther','breweryId','beerId'].forEach(id=>$(id).addEventListener('input',preview));preview();render();
 // v0.6.3: v0.6.2までは通信結果を見ずに「送信済み」にしていたため、旧データを未送信へ戻して再送できるようにする。
 {const _m=migrateLegacySync();updateInfo(_m?`旧版(v0.6.2)で「送信済み」になっていた評価 ${_m}件は、Sheetsに届いたか確認できないため「未送信」に戻しました。「未同期データを送信」で再送できます（重複する場合があります）。`:'');}
 </script></body></html>
